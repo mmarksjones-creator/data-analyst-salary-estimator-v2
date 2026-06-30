@@ -1,9 +1,36 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import os
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
 
-model = joblib.load("salary_model.pkl")
-model_columns = joblib.load("model_columns.pkl")
+MODEL_PATH = "salary_model.pkl"
+COLUMNS_PATH = "model_columns.pkl"
+
+@st.cache_resource
+def load_or_train_model():
+    if os.path.exists(MODEL_PATH) and os.path.exists(COLUMNS_PATH):
+        model = joblib.load(MODEL_PATH)
+        model_columns = joblib.load(COLUMNS_PATH)
+    else:
+        df = pd.read_csv("data/salaries.csv")
+        categorical_cols = ["job_title", "education_level", "industry", "company_size", "location", "remote_work"]
+        df_encoded = pd.get_dummies(df, columns=categorical_cols)
+
+        X = df_encoded.drop(columns=["salary"])
+        y = df_encoded["salary"]
+
+        model = RandomForestRegressor(n_estimators=100, random_state=42)
+        model.fit(X, y)
+        model_columns = X.columns.tolist()
+
+        joblib.dump(model, MODEL_PATH)
+        joblib.dump(model_columns, COLUMNS_PATH)
+
+    return model, model_columns
+
+model, model_columns = load_or_train_model()
 
 st.title("Data Analyst Salary Estimator")
 st.write("Estimate a salary based on experience, education, skills, and job context — trained on a 250,000-record dataset using a Random Forest model.")
