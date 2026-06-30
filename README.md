@@ -3,7 +3,7 @@
 An interactive Python web app that predicts salary ranges using a trained machine learning model, based on job title, experience, education, skills, industry, company size, location, remote work status, and certifications.
 
 ## Live Demo
-[Add your Streamlit Cloud URL here once deployed]
+[https://data-analyst-salary-estimator-v2-w5m7nke4qyfqifjcykeay3.streamlit.app/]
 
 ## Overview
 This project uses a Random Forest Regression model trained on a 250,000-record dataset to predict salary based on 9 input features. It includes data cleaning, exploratory analysis, model training/evaluation, and a deployed interactive Streamlit interface.
